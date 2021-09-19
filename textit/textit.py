@@ -106,14 +106,12 @@ class TextIT:
         probable_response = choose_response(response)
         return NumeralObject(**probable_response)
 
-    async def speller(self, text: str, add_correct: bool = False) -> SpellerObject:
+    async def speller(self, text: str) -> SpellerObject:
         """
         Checks the text for errors
 
         :param text: up to 10,000 text characters for check (e.g. Пример тектса)
         :type text: str
-        :param add_correct: add word correction suggestions. Default - False
-        :type add_correct: bool
         :return: speller object with founded and error and position in text (e.g. тектса and 8)
         :rtype: SpellerObject
         :raises ToLongText: if the text is longer than 10000 characters
@@ -122,8 +120,6 @@ class TextIT:
             raise exceptions.ToLongText("Maximum length of text is 10000 characters")
         payload = generate_payload(func=APIMethod.SPELLER, pars={"text": text})
         response = await make_request(self.session, payload)
-        if add_correct:
-            response["correct"] = await self.correct(response["word"])
         return SpellerObject(**response)
 
     async def word_info(self, word: str) -> WordObject:
@@ -148,17 +144,16 @@ class TextIT:
         return WordObject(**probable_response)
 
     async def set_form(
-        self,
-        word: str,
-        part: typing.Optional[WordPart] = None,
-        number: typing.Optional[WordNumber] = None,
-        gender: typing.Optional[WordGender] = None,
-        case: typing.Optional[WordCase] = None,
-        tense: typing.Optional[WordTense] = None,
-        person: typing.Optional[WordPerson] = None,
-        form: typing.Optional[WordForm] = None,
-        kind: typing.Optional[WordKind] = None,
-        add_info: bool = False,
+            self,
+            word: str,
+            part: typing.Optional[WordPart] = None,
+            number: typing.Optional[WordNumber] = None,
+            gender: typing.Optional[WordGender] = None,
+            case: typing.Optional[WordCase] = None,
+            tense: typing.Optional[WordTense] = None,
+            person: typing.Optional[WordPerson] = None,
+            form: typing.Optional[WordForm] = None,
+            kind: typing.Optional[WordKind] = None,
     ) -> WordObject:
         """
         Returns the original word in the desired word form (number, gender, case, etc.)
@@ -181,8 +176,6 @@ class TextIT:
         :type form: typing.Optional[WordForm]
         :param kind: word kind (verb)
         :type kind: typing.Optional[WordKind]
-        :param add_info: add info about this word. Default - false
-        :type add_info: bool
         :return: word object in required form
         :rtype: WordObject
         :raises ALotOfWords: if more than one word was specified
@@ -207,9 +200,6 @@ class TextIT:
         )
         response = await make_request(self.session, payload)
         probable_response = choose_response(response)
-        if add_info:
-            info = await self.word_info(probable_response["word"])
-            probable_response.update(**info.__dict__)
         return WordObject(**probable_response)
 
     async def cognate(self, word: str) -> typing.List[WordObject]:
