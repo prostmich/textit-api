@@ -38,7 +38,8 @@ def check_result(content_type: str, status_code: int, body: str):
         result_json = {}
 
     if isinstance(result_json, dict):
-        if error := result_json.get("error"):
+        error = result_json.get("error")
+        if error:
             raise exceptions.APIError(f"{error.get('message')} [{error.get('status')}]")
 
     if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED:
