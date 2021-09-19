@@ -31,12 +31,12 @@ class TextIT:
         :rtype: typing.List[WordObject]
         :raises ALotOfWords: if more than one word was specified
         """
-        payload = generate_payload(func=APIMethod.CORRECT, pars={"word": word})
-        response = await make_request(self.session, payload)
         if len(word.split(" ")) > 1:
             raise exceptions.ALotOfWords(
                 "API doesn't support phrases of more than one word"
             )
+        payload = generate_payload(func=APIMethod.CORRECT, pars={"word": word})
+        response = await make_request(self.session, payload)
         return [WordObject(**resp) for resp in response]
 
     async def hint(self, text: str) -> typing.List[WordObject]:
@@ -85,6 +85,12 @@ class TextIT:
         :raises ALotOfWords: if more than one word was specified
         """
 
+        if number < 0:
+            raise exceptions.NegativeNumber("Negative number aren't allowed")
+        if len(word.split(" ")) > 1:
+            raise exceptions.ALotOfWords(
+                "API doesn't support phrases of more than one word"
+            )
         payload = generate_payload(
             func=APIMethod.NUMERAL,
             pars={
@@ -96,12 +102,6 @@ class TextIT:
                 "format": format,
             },
         )
-        if number < 0:
-            raise exceptions.NegativeNumber("Negative number aren't allowed")
-        if len(word.split(" ")) > 1:
-            raise exceptions.ALotOfWords(
-                "API doesn't support phrases of more than one word"
-            )
         response = await make_request(self.session, payload)
         probable_response = choose_response(response)
         return NumeralObject(**probable_response)
