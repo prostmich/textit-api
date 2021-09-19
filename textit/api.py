@@ -58,8 +58,16 @@ def check_result(content_type: str, status_code: int, body: str):
 
 
 async def make_request(
-    session: aiohttp.ClientSession, payload: dict
-) -> typing.Union[dict, list]:
+    session: aiohttp.ClientSession, payload: typing.Dict,
+) -> typing.Union[typing.Dict, typing.List]:
+    """
+    Makes request to API server with specified payload
+
+    :param session: current aiohttp session
+    :param payload: payload to send
+    :return: response from API
+    :raises NetworkError: if there is some error caused by aiohttp
+    """
     log.debug('Make request with payload: "%r"', payload)
     try:
         async with session.post(TEXTIT_API_URL, data=str(payload)) as response:
