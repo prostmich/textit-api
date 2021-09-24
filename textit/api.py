@@ -32,8 +32,6 @@ def check_result(content_type: str, status_code: int, body: str):
         )
     try:
         result_json = json.loads(body)
-        if isinstance(result_json, list):
-            result_json = result_json[0]
     except ValueError:
         result_json = {}
 
@@ -58,7 +56,8 @@ def check_result(content_type: str, status_code: int, body: str):
 
 
 async def make_request(
-    session: aiohttp.ClientSession, payload: typing.Dict,
+    session: aiohttp.ClientSession,
+    payload: typing.Dict,
 ) -> typing.Union[typing.Dict, typing.List]:
     """
     Makes request to API server with specified payload
