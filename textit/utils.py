@@ -65,8 +65,8 @@ def generate_payload(commands: typing.Union[typing.List, typing.Dict]) -> typing
     if isinstance(commands, dict):
         commands = [commands]
     return {
-        "commands": [commands],
-        "href": "https://textit.ego-ai.tech/api/1.0/help",
+        "commands": commands,
+        "href": "https://github.com/prostmich/text-api", # link where we will use this API
     }
 
 
