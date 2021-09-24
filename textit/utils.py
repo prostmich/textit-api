@@ -50,7 +50,7 @@ def generate_payload(**kwargs) -> typing.Dict:
             commands[key] = _prepare_arg(value)
     return {
         "commands": [commands],
-        "href": "https://textit.ego-ai.tech/api/1.0/help",
+        "href": "https://github.com/prostmich/text-api", # link where we will use this API
     }
 
 
