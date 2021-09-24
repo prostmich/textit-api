@@ -48,13 +48,13 @@ Setting the word "ананас" to the dative plural
 ```Python
 import asyncio
 from textit import TextIT
-from textit.types.word import WordCase, WordNumber
+from textit.types.word import WordPart, WordCase, WordNumber
 
 
 async def task():
     api = TextIT()
     response = await api.set_form(
-        "ананас", case=WordCase.DATIVE, number=WordNumber.PLURAL
+        "ананас", part=WordPart.NOUN, case=WordCase.DATIVE, number=WordNumber.PLURAL
     )
     print(response.word)  # ананасам
     await api.session.close()
