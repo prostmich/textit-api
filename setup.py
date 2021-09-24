@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="textit-api",
-    version="0.0.1",
+    version="0.0.2",
     author="Mikhail Smolnikov",
     author_email="smolnik.mikhail@gmail.com",
     description="Useful tools for working with Russian text",
