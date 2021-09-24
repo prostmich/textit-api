@@ -62,7 +62,30 @@ async def task():
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(task())
+```
 
+Batch processing
+```Python
+import asyncio
+from textit import TextIT
+from textit.types.word import WordPart, WordNumber
+
+
+async def task():
+    api = TextIT()
+    text = "яблоко, персик, груша"
+    for word in text.split(", "):
+        await api.set_form(
+            word, part=WordPart.NOUN, number=WordNumber.PLURAL, immediately=False
+        )
+    responses = await api.send_request()
+    result = ", ".join([response.word for response in responses])
+    print(result)  # яблоки, персики, груши
+    await api.session.close()
+
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(task())
 ```
 
 ## Documentation

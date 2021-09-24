@@ -32,3 +32,7 @@ class ALotOfWords(ValueError):
 
 class NegativeNumber(ValueError):
     pass
+
+
+class BatchProcessingError(ValueError):
+    pass

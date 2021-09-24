@@ -30,31 +30,49 @@ def _prepare_arg(arg):
     elif isinstance(arg, dict):
         return {k: _prepare_arg(v) for k, v in arg.items()}
     elif isinstance(arg, Enum):
-        return arg.value
+        return str(arg.value)
     elif isinstance(arg, bool):
         return str(arg).lower()
+    elif isinstance(arg, int):
+        return str(arg)
     return arg
 
 
-def generate_payload(**kwargs) -> typing.Dict:
+def generate_command(**kwargs) -> typing.Dict:
     """
-    Generates payload for making API request
+    Generates dictionary with command for making API request later
 
-    :param kwargs: parameters for sending
+    :param kwargs: parameters for generate
     :return: payload
     :rtype: typing.Dict
     """
-    commands = {}
+    command = {}
     for key, value in kwargs.items():
         if not key.startswith("_") and value is not None:
-            commands[key] = _prepare_arg(value)
+            command[key] = _prepare_arg(value)
+    return command
+
+
+def generate_payload(commands: typing.Union[typing.List, typing.Dict]) -> typing.Dict:
+    """
+    Generates finished payload for making API request
+
+    :param commands: commands for sending
+    :type commands: typing.Union[typing.List, typing.Dict]
+    :return: payload
+    :rtype: typing.Dict
+    """
+    if isinstance(commands, dict):
+        commands = [commands]
     return {
         "commands": [commands],
         "href": "https://textit.ego-ai.tech/api/1.0/help",
     }
 
 
-def choose_response(responses: typing.List[typing.Dict]) -> typing.Dict:
+def choose_response(
+    responses: typing.List[typing.Dict],
+) -> typing.Optional[typing.Dict]:
     """
     Selects the most correct response based on the "probability" field.
     If field is not exists, returns first item.
@@ -64,6 +82,37 @@ def choose_response(responses: typing.List[typing.Dict]) -> typing.Dict:
     :return: the most correct response
     :rtype: typing.Dict
     """
+    if not responses:
+        return None
     if all([response.get("probability") for response in responses]):
         responses.sort(key=lambda x: x.get("probability"))
     return responses[0]
+
+
+def get_func_list(commands: typing.List) -> typing.List[str]:
+    """
+    Gets only names of commands
+
+    :param commands: list of commands to send
+    :type commands: typing.List
+    :return: list of names
+    :rtype: typing.List[str]
+    """
+    return [command.get("func") for command in commands]
+
+
+def sign_responses(func_list: typing.List, responses: typing.List) -> typing.List:
+    """
+    Signs individual API responses for further identification
+
+    :param func_list: list of command names
+    :type func_list: typing.List
+    :param responses: list of API responses
+    :type responses: typing.List
+    :return: list of signed API responses
+    :rtype: typing.List
+    """
+    return [
+        {"func": func_name, "response": responses[i]}
+        for i, func_name in enumerate(func_list)
+    ]
