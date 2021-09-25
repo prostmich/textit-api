@@ -66,7 +66,7 @@ def generate_payload(commands: typing.Union[typing.List, typing.Dict]) -> typing
         commands = [commands]
     return {
         "commands": commands,
-        "href": "https://github.com/prostmich/text-api", # link where we will use this API
+        "href": "https://github.com/prostmich/text-api",  # link where we will use this API
     }
 
 
