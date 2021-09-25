@@ -327,9 +327,9 @@ class TextIT:
             )
         func_list = get_func_list(self.request)
         payload = generate_payload(self.request)
+        self.request = []
         responses = await make_request(self.session, payload)
         signed_responses = sign_responses(func_list, responses)
-        self.request = []
         return [
             _wrap_response(signed_response.get("func"), signed_response.get("response"))
             for signed_response in signed_responses
