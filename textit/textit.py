@@ -50,7 +50,7 @@ class TextIT:
         if not immediately:
             return self.request.append(command)
         response = await make_request(self.session, generate_payload(command))
-        return [WordObject(**word) if word else None for word in response]
+        return [WordObject(**word) if word else None for word in response[0]]
 
     async def hint(
         self, text: str, immediately: bool = True
@@ -72,7 +72,7 @@ class TextIT:
         if not immediately:
             return self.request.append(command)
         response = await make_request(self.session, generate_payload(command))
-        return [WordObject(**word) if word else None for word in response]
+        return [WordObject(**word) if word else None for word in response[0]]
 
     async def numeral(
         self,
@@ -127,7 +127,7 @@ class TextIT:
         if not immediately:
             return self.request.append(command)
         response = await make_request(self.session, generate_payload(command))
-        probable_response = choose_response(response)
+        probable_response = choose_response(response[0])
         return NumeralObject(**probable_response) if probable_response else None
 
     async def speller(
@@ -150,7 +150,7 @@ class TextIT:
         if not immediately:
             return self.request.append(command)
         response = await make_request(self.session, generate_payload(command))
-        return SpellerObject(**response) if response else None
+        return SpellerObject(**response[0]) if response else None
 
     async def word_info(
         self, word: str, immediately: bool = True
@@ -176,7 +176,7 @@ class TextIT:
         if not immediately:
             return self.request.append(command)
         response = await make_request(self.session, generate_payload(command))
-        probable_response = choose_response(response)
+        probable_response = choose_response(response[0])
         return WordObject(**probable_response) if probable_response else None
 
     async def set_form(
@@ -265,7 +265,7 @@ class TextIT:
         if not immediately:
             return self.request.append(command)
         response = await make_request(self.session, generate_payload(command))
-        return [WordObject(**word) if word else None for word in response]
+        return [WordObject(**word) if word else None for word in response[0]]
 
     async def synonym(
         self, word: str, immediately: bool = True
@@ -289,7 +289,7 @@ class TextIT:
         if not immediately:
             return self.request.append(command)
         response = await make_request(self.session, generate_payload(command))
-        return [WordObject(**word) if word else None for word in response]
+        return [WordObject(**word) if word else None for word in response[0]]
 
     async def lat_to_cyr(
         self, text: str, immediately: bool = True
@@ -311,8 +311,8 @@ class TextIT:
         command = generate_command(func=APIMethod.LAT_TO_CYR, pars={"text": text})
         if not immediately:
             return self.request.append(command)
-        response = (await make_request(self.session, generate_payload(command)))[0]
-        return response.get("text")
+        response = await make_request(self.session, generate_payload(command))
+        return response[0][0].get("text")
 
     async def send_request(self):
         """
